@@ -1,0 +1,134 @@
+<form name="container-form" class="mt-4" method="POST" action="/product/handle-form-action">
+  <div>
+    <h3>Sản phẩm của tôi</h3>
+    <div><a href="/store/Trash/laptop">Thùng rác ({{deleteCount}})</a>
+      <div class="mt-4 d-flex align-items-center">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="checkbox-all">
+          <label class="form-check-label" for="checkbox-all">Select All</label>
+        </div>
+        <select class="form-control form-control-sm Checkbox" name="action" required>
+          <option value="">Hành động</option>
+          <option value="Delete">Xóa</option>
+        </select>
+        <button class="btn btn-primary btn-sm btn-submit disabled">Áp dụng</button>
+      </div>
+    </div>
+
+
+    <table class="table mt-4">
+      <thead>
+        <tr>
+          <th scope="col">Chọn</th>
+          <th scope="col">STT</th>
+          <th scope="col">Tên sản phẩm</th>
+          <th scope="col">Hình ảnh</th>
+          <th scope="col">Gía tiền</th>
+          <th scope="col">Thay đổi</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each Laptops}}
+        <tr>
+          <td>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="LaptopIDs[]" value="{{this._id}}">
+            </div>
+          </td>
+          <th scope="row">{{sum @index 1}}</th> {{!--Dùng hàm gọi từ index/src để lấy hàm SUM được dùng từ index với
+          index là đối sô thứ 1 và số 1 là đối số thứ 2--}}
+          <td>{{this.Name}}</td>
+          <td><img src="{{this.Image}}" alt="" class="img-small"></td>
+          <td>{{this.Price}}</td>
+          <td>
+            <a href="/product/{{this._id}}/edit" class="btn btn-light">Sửa</a> {{!--Dùng Slug để khi Public cho người
+            dùng cuối để tìm kiếm--}}
+            <a href="#" class="btn btn-light" data-id="{{this._id}}" data-toggle="modal" data-target="#delete">Xóa</a>
+          </td>
+        </tr>
+      </tbody>
+      {{else}}
+      <tr>
+        <td colspan="5" class="text-center">
+          <h2>Bạn chưa có sản phẩm nào.<a href="/Product/create">Hãy thêm sản phẩm tại đây</a></h2>
+        </td>
+      </tr>
+      {{/each}}
+    </table>
+</form>
+{{!--Confirm delete data --}}
+<div id="delete" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Bạn có chắc muốn xóa sản phẩm này không</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Bấm xác nhận để xóa</h6>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-delete" type="button" class="btn btn-danger">Xác nhận xóa</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Hủy bỏ</button>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- delete hidden form --}}
+<form method="POST" name="delete-form"> </form>
+<script>
+  // lắng nghe sự kiện khi DOM load khi DOM đã tải xong nó sẽ gọi vào callback function đối số thứ 2 của nó
+  document.addEventListener('DOMContentLoaded', function () {
+    var productID
+    var deleteForm = document.forms['delete-form']
+    // dùng để lắng nghe nút xóa
+    var btnDelete = document.getElementById('btn-delete')
+    var container = document.forms['container-form']
+    var checkboxAll = $('#checkbox-all') // tạo biến cho ô checkbox tổng
+    var checkboxItem = $('input[name="LaptopIDs[]"]')
+    var checkSubmitbtn = $('.btn-submit')
+    // Khi click 
+    $("#delete").on('show.bs.modal', function (event) {
+      var button = $(event.relatedTarget) // nút đã kích hoạt phương thức
+      productID = button.data('id') // trích xuất thông tin từ dữ liệu
+    })
+    // lắng nghe sự kiện khi bấn vào btn
+    btnDelete.onclick = function () {
+      deleteForm.action = '/product/' + productID + '?_method=DELETE'
+      deleteForm.submit()
+    }
+    // Khi click vào ô chọn tất cả
+    checkboxAll.change(function () {
+      //Tạo ra 1 biến để khi chọn ô check all
+      var checkAll = $(this).prop('checked')
+      checkboxItem.prop('checked', checkAll)
+      renderCheckAllSubmitbtn()
+    })
+
+    // Khi click vào ô chọn một giá trị duy nhất
+    checkboxItem.change(function () {
+      var checkboxItemAll = checkboxItem.length === $('input[name="LaptopIDs[]"]:checked').length
+      checkboxAll.prop('checked', checkboxItemAll)
+      renderCheckAllSubmitbtn()
+    })
+    // kiểm tra nút submit khi được click
+    checkSubmitbtn.click(function(e){
+      e.preventDefault()
+      var submit = !$(this).hasClass('disabled')
+      if(submit){
+        container.submit()
+      }
+    })
+    // Render lại check all submit btn
+    function renderCheckAllSubmitbtn() {
+      var checkCount = $('input[name="LaptopIDs[]"]:checked').length
+      if (checkCount > 0) {
+        checkSubmitbtn.removeClass('disabled')
+      }
+      else {
+        checkSubmitbtn.addClass('disabled')
+      }
+    }
+  })
+
+</script>

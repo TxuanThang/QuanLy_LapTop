@@ -1,0 +1,17 @@
+<div class="mt-4">
+    <div class="row">
+        {{#each Laptops}}
+        <div class="col-sm-6 col-lg-4">
+            <div class="card card-item">
+                <a href="Product/{{this.Slug}}"><img style="width: 200px; height: 200px" class="card-img-top" src="{{this.Image}}" alt="{{this.Name}}"></a> 
+                        <div class="card-body">
+                           <a href="Product/{{this.Slug}}"><h5 class="card-title">{{this.Name}}</h5></a>
+                            <p class="card-text">{{this.Description}}</p>
+                             <p><h5 class="card-text">{{this.Price}}</5></p> 
+                            <a href="#" class="btn btn-primary">Mua San Pham</a>
+                        </div>
+                </div>
+        </div>
+        {{/each}}
+    </div>
+</div>

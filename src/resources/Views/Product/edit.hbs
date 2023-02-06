@@ -1,0 +1,24 @@
+<div class="mt-4">
+  <h3>
+    Sửa Sản Phẩm
+  </h3>
+  <form class="mt-4" method="POST" action="/product/{{Laptop._id}}?_method=PUT"> 
+    <div class="mb-3">
+      <label for="Name" class="form-label">Ten San Pham</label>
+       <input type="text" class="form-control" value="{{Laptop.Name}}" id="Name" placeholder="Ten San Pham" name="Name">
+    </div>
+    <div class="mb-3">
+      <label for="Description" class="form-label">Mo Ta San Pham</label>
+        <textarea  class="form-control"id="Description" placeholder="Mo Ta San Pham" name="Description">{{Laptop.Description}}</textarea> 
+    </div>
+     <div class="mb-3">
+      <label for="Image" class="form-label">Anh San Pham</label>
+      <input value="{{Laptop.Image}}" id="Image" type="text" name="Image"> 
+    </div>
+    <div class="mb-3">
+      <label for="Price" class="form-label">Gia San Pham</label>
+       <input type="text" class="form-control" value="{{Laptop.Price}}" id="Price" placeholder="Gia San Pham" name="Price">
+    </div>
+    <button type="submit" class="btn btn-primary">Lưu</button>
+  </form>
+</div>
